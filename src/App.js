@@ -1,9 +1,9 @@
 import './App.css';
-import Main from './components/Main';
+import TimeZones from './components/TimeZones';
 
 function App() {
   return (
-    <Main />
+    <TimeZones />
   );
 }
 
