@@ -1,118 +1,36 @@
-import React, { useState } from "react";
 import "./App.css";
+import { useEffect, useState } from "react";
+import List from "./components/List";
+import Details from "./components/Details";
 
-function New(props) {
+function App() {
+  const [users, setUsers] = useState([]);
+  const [info, setInfo] = useState({});
+
+  useEffect(() => {
+    firstLoad();
+  }, []);
+
+  const firstLoad = () => {
+    fetch(
+      "https://raw.githubusercontent.com/netology-code/ra16-homeworks/master/hooks-context/use-effect/data/users.json"
+    )
+      .then((resp) => resp.json())
+      .then(function (data) {
+        setUsers(data);
+      });
+  };
+
+  const onHandleClick = (id, name) => {
+    setInfo({ id: id, name: name });
+  };
+
   return (
-    <div className="wrap-item wrap-item-new">
-      <span className="label">New!</span>
-      {props.children}
-    </div>
+    <>
+      <List onHandleClick={onHandleClick} users={users} />
+      <Details info={info} />
+    </>
   );
 }
 
-function Popular(props) {
-  return (
-    <div className="wrap-item wrap-item-popular">
-      <span className="label">Popular!</span>
-      {props.children}
-    </div>
-  );
-}
-
-const HighlightNew = (Component) => {
-  function View(props) {
-    if (props.views >= 1000) {
-      return (
-        <Popular>
-          <Component {...props} />
-        </Popular>
-      );
-    } else if (props.views < 100) {
-      return (
-        <New>
-          <Component {...props} />
-        </New>
-      );
-    } else {
-      return <Component {...props} />;
-    }
-  }
-  return View;
-};
-
-function Article(props) {
-  return (
-    <div className="item item-article">
-      <h3>
-        <a href="#">{props.title}</a>
-      </h3>
-      <p className="views">Прочтений: {props.views}</p>
-    </div>
-  );
-}
-
-function Video(props) {
-  return (
-    <div className="item item-video">
-      <iframe
-        src={props.url}
-        frameborder="0"
-        allow="autoplay; encrypted-media"
-        allowfullscreen
-      ></iframe>
-      <p className="views">Просмотров: {props.views}</p>
-    </div>
-  );
-}
-
-const HighNewVideo = HighlightNew(Video);
-const HighNewArticle = HighlightNew(Article);
-
-function List(props) {
-  return props.list.map((item) => {
-    switch (item.type) {
-      case "video":
-        return <HighNewVideo {...item} />;
-
-      case "article":
-        return <HighNewArticle {...item} />;
-    }
-  });
-}
-
-export default function App() {
-  const [list, setList] = useState([
-    {
-      type: "video",
-      url: "https://www.youtube.com/embed/rN6nlNC9WQA?rel=0&amp;controls=0&amp;showinfo=0",
-      views: 50,
-    },
-    {
-      type: "video",
-      url: "https://www.youtube.com/embed/dVkK36KOcqs?rel=0&amp;controls=0&amp;showinfo=0",
-      views: 12,
-    },
-    {
-      type: "article",
-      title: "Невероятные события в неизвестном поселке...",
-      views: 175,
-    },
-    {
-      type: "article",
-      title: "Секретные данные были раскрыты!",
-      views: 1532,
-    },
-    {
-      type: "video",
-      url: "https://www.youtube.com/embed/TKmGU77INaM?rel=0&amp;controls=0&amp;showinfo=0",
-      views: 4253,
-    },
-    {
-      type: "article",
-      title: "Кот Бегемот обладает невероятной...",
-      views: 12,
-    },
-  ]);
-
-  return <List list={list} />;
-}
+export default App;
