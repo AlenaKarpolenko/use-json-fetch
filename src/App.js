@@ -1,34 +1,25 @@
 import "./App.css";
-import { useEffect, useState } from "react";
-import List from "./components/List";
-import Details from "./components/Details";
+import useJsonFetch from "./hooks/useJsonFetch";
 
 function App() {
-  const [users, setUsers] = useState([]);
-  const [info, setInfo] = useState({});
+  const [data, loading, error] = useJsonFetch("http://localhost:7071/data", []);
 
-  useEffect(() => {
-    firstLoad();
-  }, []);
-
-  const firstLoad = () => {
-    fetch(
-      "https://raw.githubusercontent.com/netology-code/ra16-homeworks/master/hooks-context/use-effect/data/users.json"
-    )
-      .then((resp) => resp.json())
-      .then(function (data) {
-        setUsers(data);
-      });
-  };
-
-  const onHandleClick = (id, name) => {
-    setInfo({ id: id, name: name });
-  };
+  const [data1, loading1, error1] = useJsonFetch(
+    "http://localhost:7070/error",
+    []
+  );
+  const [data2, loading2, error2] = useJsonFetch(
+    "http://localhost:7070/loading",
+    []
+  );
 
   return (
     <>
-      <List onHandleClick={onHandleClick} users={users} />
-      <Details info={info} />
+      data - {data.status}
+      <br />
+      error - {error1 != null ? "true" : "false"}
+      <br />
+      loading - {loading2 ? "true" : "false"}
     </>
   );
 }
